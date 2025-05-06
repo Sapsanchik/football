@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="theme-color" content="#2c3e50" />
+        <meta
+            name="description"
+            content="Футбольный менеджер PRO - приложение для управления командами"
+        />
+
+        <title>Футбольный менеджер PRO</title>
+
+        <!-- PWA -->
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="icon" href="/icons/icon-192x192.png" />
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="styles.css" />
+
+        <!-- Шрифты -->
+        <link
+            href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <img src="/images/logo.png" alt="Логотип" class="logo" />
+                <h1>Футбольный менеджер PRO</h1>
+            </header>
+
+            <main>
+                <section class="team-controls">
+                    <div class="team-actions">
+                        <button id="manual-team-creation">Ручное формирование</button>
+                        <button id="auto-team-creation">Автоформирование</button>
+                        <button id="reset-teams">Сбросить команды</button>
+                    </div>
+                    <div id="team-count-selector" class="hidden">
+                        <label>Количество команд:</label>
+                        <input type="number" id="team-count" min="2" max="10" value="2" />
+                        <button id="confirm-team-count">Подтвердить</button>
+                    </div>
+                </section>
+
+                <section id="manual-team-creation-area" class="hidden">
+                    <div class="teams-container" id="teams-container"></div>
+                    <div class="available-players">
+                        <h3>Доступные игроки</h3>
+                        <div id="available-players-list" class="players-list"></div>
+                    </div>
+                </section>
+
+                <section id="auto-team-creation-area" class="hidden">
+                    <div class="selection-controls">
+                        <button id="select-all-players">Выбрать всех</button>
+                        <button id="deselect-all-players">Снять выделение</button>
+                        <button id="confirm-player-selection">Подтвердить выбор</button>
+                    </div>
+                    <div class="players-selection">
+                        <h3>
+                            Выберите игроков для команд (минимум в 2 раза больше
+                            количества команд)
+                        </h3>
+                        <div id="players-selection-list" class="players-list"></div>
+                    </div>
+                </section>
+
+                <section id="teams-display"></section>
+
+                <section class="all-players">
+                    <div class="players-header">
+                        <h2>Все игроки <span id="total-players-count"></span></h2>
+                        <div class="player-management">
+                            <button id="add-player-btn">Добавить игрока</button>
+                            <div class="sort-options">
+                                <select id="sort-by">
+                                    <option value="name">По фамилии</option>
+                                    <option value="skill">По навыку</option>
+                                </select>
+                                <button id="apply-sort">Сортировать</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="players-list" class="players-list"></div>
+                </section>
+            </main>
+
+            <div id="install-button" class="install-button hidden">
+                <button>Установить приложение</button>
+            </div>
+        </div>
+
+        <script src="script.js"></script>
+        <script>
+            // PWA Installation
+            let deferredPrompt;
+            const installButton = document.getElementById('install-button');
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                installButton.classList.remove('hidden');
+
+                installButton.addEventListener('click', () => {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('Пользователь установил приложение');
+                        }
+                        installButton.classList.add('hidden');
+                    });
+                });
+            });
+
+            // Проверка режима PWA
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                console.log('Запущено как PWA');
+                installButton.classList.add('hidden');
+            }
+
+            // Регистрация Service Worker
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker
+                        .register('/sw.js')
+                        .then((registration) => {
+                            console.log('ServiceWorker зарегистрирован');
+                            registration.update();
+                        })
+                        .catch((err) => {
+                            console.error('Ошибка регистрации ServiceWorker:', err);
+                        });
+                });
+            }
+        </script>
+    </body>
+</html>

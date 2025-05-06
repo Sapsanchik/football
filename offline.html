@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Оффлайн режим</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                background-color: #f5f7fa;
+                color: #2c3e50;
+                text-align: center;
+                padding: 20px;
+            }
+            .container {
+                max-width: 500px;
+            }
+            h1 {
+                color: #e74c3c;
+                margin-bottom: 20px;
+            }
+            button {
+                background: #3498db;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                margin-top: 20px;
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Вы в оффлайн-режиме</h1>
+            <p>Для работы приложения требуется интернет-соединение.</p>
+            <p>Попробуйте подключиться к сети и обновить страницу.</p>
+            <button onclick="window.location.reload()">Обновить</button>
+        </div>
+    </body>
+</html>
