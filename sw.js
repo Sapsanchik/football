@@ -1,15 +1,15 @@
 const CACHE_NAME = 'football-manager-v3';
 const OFFLINE_PAGE = '/offline.html';
 const ASSETS = [
-    '/',
-    '/index.html',
-    '/player.html',
-    '/styles.css',
-    '/script.js',
-    '/player.js',
-    '/icons/icon-192x192.png',
-    '/icons/icon-512x512.png',
-    '/images/logo.png',
+    '/football/',
+    '/football/index.html',
+    '/football/player.html',
+    '/football/styles.css',
+    '/football/script.js',
+    '/football/player.js',
+    '/football/icons/icon-192x192.png',
+    '/football/icons/icon-512x512.png',
+    '/football/images/logo.png',
 ];
 
 // Установка и кеширование
