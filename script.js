@@ -688,15 +688,17 @@ class FootballManager {
                     player.skill + (isMatchWin ? 0.01 : -0.01)
                 );
 
-                if (isMatchWin) {
-                    team.forEach((teammate) => {
-                        if (player.id !== teammate.id) {
-                            player.interactions[teammate.id] = this.validateSkill(
-                                (player.interactions[teammate.id] || 0.5) + 0.05
-                            );
-                        }
-                    });
-                }
+                // Изменяем взаимодействие как при победе, так и при поражении
+                team.forEach((teammate) => {
+                    if (player.id !== teammate.id) {
+                        const currentInteraction =
+                            player.interactions[teammate.id] || 0.5;
+                        const interactionChange = isMatchWin ? 0.05 : -0.05;
+                        player.interactions[teammate.id] = this.validateSkill(
+                            currentInteraction + interactionChange
+                        );
+                    }
+                });
             }
 
             if (isMatchWin !== undefined)
