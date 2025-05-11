@@ -8,6 +8,7 @@ class FootballManager {
         this.selectedForAutoTeam = new Set();
         this.init();
     }
+
     async init() {
         await this.checkNetworkStatus();
         await this.loadPlayers();
@@ -56,14 +57,12 @@ class FootballManager {
 
     async loadPlayers() {
         try {
-            // Пробуем загрузить свежие данные
             if (navigator.onLine) {
                 const response = await fetch('/data/players.json');
                 const data = await response.json();
                 this.players = data.players;
                 localStorage.setItem('players', JSON.stringify(this.players));
             } else {
-                // Оффлайн режим - из localStorage
                 const savedPlayers = localStorage.getItem('players');
                 if (savedPlayers) {
                     this.players = JSON.parse(savedPlayers);
@@ -77,13 +76,12 @@ class FootballManager {
             }
         }
     }
+
     async savePlayers() {
         localStorage.setItem('players', JSON.stringify(this.players));
 
-        // Пробуем синхронизировать с "сервером"
         if (navigator.onLine) {
             try {
-                // В реальном приложении здесь будет fetch на сервер
                 console.log('Данные сохранены локально и отправлены на сервер');
             } catch (error) {
                 console.error('Ошибка синхронизации:', error);
@@ -457,9 +455,46 @@ class FootballManager {
             <div class="manual-team dropzone" data-team-index="${i}">
                 <h3>Команда ${i + 1}</h3>
                 <div class="team-players" id="manual-team-${i}"></div>
+                <div class="team-actions">
+                    <div class="match-controls">
+                        <h4>Основной матч:</h4>
+                        <button class="result-btn win-btn" data-team-index="${i}" data-result-type="matchWin">Победа</button>
+                        <button class="result-btn lose-btn" data-team-index="${i}" data-result-type="matchLose">Поражение</button>
+                    </div>
+                    <div class="cup-controls">
+                        <h4>Кубок:</h4>
+                        <button class="result-btn win-btn" data-team-index="${i}" data-result-type="cupWin">Победа</button>
+                        <button class="result-btn lose-btn" data-team-index="${i}" data-result-type="cupLose">Поражение</button>
+                    </div>
+                </div>
             </div>
         `
         ).join('');
+
+        teamsContainer.querySelectorAll('.result-btn').forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+                const teamIndex = parseInt(e.target.dataset.teamIndex);
+                const resultType = e.target.dataset.resultType;
+
+                let isMatchWin, isCupWin;
+                switch (resultType) {
+                    case 'matchWin':
+                        isMatchWin = true;
+                        break;
+                    case 'matchLose':
+                        isMatchWin = false;
+                        break;
+                    case 'cupWin':
+                        isCupWin = true;
+                        break;
+                    case 'cupLose':
+                        isCupWin = false;
+                        break;
+                }
+
+                this.recordMatchResult(teamIndex, isMatchWin, isCupWin);
+            });
+        });
 
         this.renderAvailablePlayers();
     }
@@ -747,7 +782,6 @@ class FootballManager {
 document.addEventListener('DOMContentLoaded', () => {
     const manager = new FootballManager();
 
-    // Регистрация горячих клавиш для PWA
     document.addEventListener('keydown', (e) => {
         if (e.ctrlKey && e.key === 's') {
             e.preventDefault();
