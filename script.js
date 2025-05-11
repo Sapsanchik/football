@@ -111,7 +111,6 @@ class FootballManager {
         const num = parseFloat(skill);
         return isNaN(num) ? 0.5 : Math.min(1, Math.max(0.1, parseFloat(num.toFixed(2))));
     }
-
     initInteractions() {
         this.players.forEach((player1) => {
             this.players.forEach((player2) => {
