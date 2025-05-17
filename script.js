@@ -780,6 +780,9 @@ class FootballManager {
     }
 }
 
+const backup = localStorage.getItem('players');
+console.log(backup);
+
 document.addEventListener('DOMContentLoaded', () => {
     const manager = new FootballManager();
 
